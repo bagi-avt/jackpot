@@ -1,0 +1,40 @@
+# Джекпот — баланс
+
+Мобильный лендинг в стиле казино: пользователь тянет рычаг, барабаны крутятся и останавливаются на цифрах баланса.
+
+Стек: React 18, TypeScript, Vite, Vitest.
+
+## Параметры URL
+
+| Параметр | Синонимы | Пример | Что делает |
+|---|---|---|---|
+| `balance` | `b`, `amount` | `?balance=1548000` | Число на барабанах. Пробелы, `_` и `,` игнорируются |
+| `currency` | `cur` | `?currency=kz` | Валюта: локаль (`kk-KZ`), код страны (`kz`) или ISO-код (`KZT`) |
+| `locale` | `lang`, `l` | `?locale=ru-RU` | Формат числа. Вместе с `currency` задаёт только формат |
+
+Параметры читаются и из `#hash`: `#balance=1548000&currency=USD`.
+
+Примеры:
+- `?balance=1548000&currency=ru-RU` → 1 548 000 ₽
+- `?currency=kz` / `?currency=KZT` → 1 548 000 ₸
+- `?currency=USD` → $1,548,000
+- `?locale=ru-RU&currency=USD` → 1 548 000 $
+
+Без параметров: 1 548 000 ₽. Неизвестные значения откатываются на рубли.
+
+## Разработка
+
+```bash
+npm install
+npm run dev        # http://localhost:5173/?balance=1548000&currency=kz
+npm test
+npm run build
+```
+
+## Деплой на GitHub Pages
+
+Workflow `.github/workflows/deploy.yml` на каждый push в `main` проверяет типы, гоняет тесты, собирает проект и публикует `dist` на Pages. На pull request выполняется только проверка и сборка.
+
+Один раз в репозитории: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
+
+Сайт будет доступен по адресу `https://<username>.github.io/<repo>/`. В `vite.config.ts` стоит `base: './'`, так что имя репозитория в конфиге указывать не нужно.
