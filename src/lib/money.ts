@@ -53,8 +53,14 @@ export function resolveMoney(currencyParam: string | null, localeParam: string |
   const fromCurrency = parseMoneyToken(currencyParam);
 
   const currency = fromCurrency.currency ?? fromLocale.currency ?? DEFAULT_MONEY.currency;
-  const locale =
+  let locale =
     fromLocale.locale ?? fromCurrency.locale ?? CURRENCY_LOCALE[currency] ?? DEFAULT_MONEY.locale;
+
+  try {
+    if (Intl.NumberFormat.supportedLocalesOf([locale]).length === 0) locale = DEFAULT_MONEY.locale;
+  } catch {
+    locale = DEFAULT_MONEY.locale;
+  }
 
   try {
     new Intl.NumberFormat(locale, { style: 'currency', currency });
